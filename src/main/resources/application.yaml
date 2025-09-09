@@ -1,14 +1,27 @@
 spring:
+  # DB 접속 정보
   datasource:
     url: jdbc:mysql://localhost:3306/devdatabase
     username: user
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+    hikari.auto-commit: false # set autocommit 호출 제거
+
   jpa:
-    hibernate:
-      ddl-auto: none
+    hibernate.ddl-auto: none
     show-sql: true
-    properties:
-      hibernate:
+    properties.hibernate:
         format_sql: true
+        default_batch_fetch_size: 1000
+    defer-datasource-initialization: true
+    open-in-view: false
+
+  sql:
+    init:
+      mode: always  # data.sql 실행
+  data:
+    web:
+      pageable:
+        default-page-size: 10 # Pageable 기본 size 설정
+        max-page-size: 20 # Pageable 최대 size 설정
