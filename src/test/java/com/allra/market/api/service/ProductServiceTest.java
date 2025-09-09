@@ -45,7 +45,7 @@ class ProductServiceTest extends IntegrationTestSupport {
     void searchProductsWhitCondition() {
         // given
         ProductSearchCondition condition = new ProductSearchCondition(2L, "아이폰", 0L, 2_000_000L);
-        PageRequest pageable = PageRequest.of(0, 10);
+        PageRequest pageable = PageRequest.of(0, 20);
 
         // when
         Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
@@ -61,7 +61,7 @@ class ProductServiceTest extends IntegrationTestSupport {
     void searchProductsWhitCategoryId() {
         // given
         ProductSearchCondition condition = new ProductSearchCondition(1L, null, null, null);
-        PageRequest pageable = PageRequest.of(0, 10);
+        PageRequest pageable = PageRequest.of(0, 20);
 
         // when
         Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
@@ -80,7 +80,7 @@ class ProductServiceTest extends IntegrationTestSupport {
     void searchProductsWhitProductName() {
         // given
         ProductSearchCondition condition = new ProductSearchCondition(null, "폰", null, null);
-        PageRequest pageable = PageRequest.of(0, 10);
+        PageRequest pageable = PageRequest.of(0, 20);
 
         // when
         Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
@@ -96,7 +96,7 @@ class ProductServiceTest extends IntegrationTestSupport {
     void searchProductsWhitBetweenPrice() {
         // given
         ProductSearchCondition condition = new ProductSearchCondition(null, null, 150_000L, 1_900_000L);
-        PageRequest pageable = PageRequest.of(0, 10);
+        PageRequest pageable = PageRequest.of(0, 20);
 
         // when
         Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
