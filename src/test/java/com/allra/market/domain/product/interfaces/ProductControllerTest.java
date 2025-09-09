@@ -1,4 +1,4 @@
-package com.allra.market.api.controller;
+package com.allra.market.domain.product.interfaces;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import com.allra.market.api.ControllerTestSupport;
-import com.allra.market.domain.product.request.ProductSearchCondition;
-import com.allra.market.domain.product.response.ProductResponse;
+import com.allra.market.ControllerTestSupport;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.interfaces.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;

@@ -1,6 +1,6 @@
 package com.allra.market.domain.category;
 
-import com.allra.market.domain.BaseEntity;
+import com.allra.market.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

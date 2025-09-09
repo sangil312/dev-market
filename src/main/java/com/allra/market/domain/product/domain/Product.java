@@ -1,6 +1,6 @@
-package com.allra.market.domain.product;
+package com.allra.market.domain.product.domain;
 
-import com.allra.market.domain.BaseEntity;
+import com.allra.market.common.BaseEntity;
 import com.allra.market.domain.category.Category;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

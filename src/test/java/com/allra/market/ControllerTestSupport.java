@@ -1,7 +1,7 @@
-package com.allra.market.api;
+package com.allra.market;
 
-import com.allra.market.api.controller.ProductController;
-import com.allra.market.api.service.ProductService;
+import com.allra.market.domain.product.interfaces.ProductController;
+import com.allra.market.domain.product.application.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

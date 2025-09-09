@@ -1,9 +1,7 @@
-package com.allra.market.domain.product.repository;
+package com.allra.market.domain.product.domain.repository;
 
-import com.allra.market.domain.product.Product;
+import com.allra.market.domain.product.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 }

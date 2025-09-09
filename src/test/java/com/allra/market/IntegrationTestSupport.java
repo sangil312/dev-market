@@ -1,4 +1,4 @@
-package com.allra.market.api;
+package com.allra.market;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

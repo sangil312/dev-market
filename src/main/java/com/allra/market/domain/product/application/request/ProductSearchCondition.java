@@ -1,4 +1,4 @@
-package com.allra.market.domain.product.request;
+package com.allra.market.domain.product.application.request;
 
 import lombok.Builder;
 

@@ -1,10 +1,10 @@
-package com.allra.market.api.service;
+package com.allra.market.domain.product.application;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.allra.market.api.IntegrationTestSupport;
-import com.allra.market.domain.product.request.ProductSearchCondition;
-import com.allra.market.domain.product.response.ProductResponse;
+import com.allra.market.IntegrationTestSupport;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.interfaces.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

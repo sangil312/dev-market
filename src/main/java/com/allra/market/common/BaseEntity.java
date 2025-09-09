@@ -1,4 +1,4 @@
-package com.allra.market.domain;
+package com.allra.market.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

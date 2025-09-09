@@ -1,10 +1,11 @@
-package com.allra.market.domain.product.repository;
+package com.allra.market.domain.product.infrastructure;
 
-import static com.allra.market.domain.product.QProduct.product;
+import static com.allra.market.domain.product.domain.QProduct.product;
 
-import com.allra.market.domain.product.request.ProductSearchCondition;
-import com.allra.market.domain.product.response.ProductResponse;
-import com.allra.market.domain.product.response.QProductResponse;
+import com.allra.market.domain.product.domain.repository.ProductRepositoryCustom;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.interfaces.response.ProductResponse;
+import com.allra.market.domain.product.interfaces.response.QProductResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
+@Repository
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 

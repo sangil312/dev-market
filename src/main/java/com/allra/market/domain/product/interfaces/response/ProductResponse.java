@@ -1,4 +1,4 @@
-package com.allra.market.domain.product.response;
+package com.allra.market.domain.product.interfaces.response;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
