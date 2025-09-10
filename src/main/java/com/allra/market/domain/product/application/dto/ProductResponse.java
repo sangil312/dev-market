@@ -1,4 +1,4 @@
-package com.allra.market.domain.product.interfaces.response;
+package com.allra.market.domain.product.application.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
@@ -13,6 +13,5 @@ public record ProductResponse(
         Boolean isSoldOut
 ) {
     @QueryProjection
-    public ProductResponse {
-    }
+    public ProductResponse {}
 }

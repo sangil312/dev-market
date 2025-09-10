@@ -1,5 +1,6 @@
 package com.allra.market.domain.cart.domain;
 
+import com.allra.market.domain.product.domain.Product;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,4 +16,13 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Cart cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
+
+    private Integer quantity;
+
+    private Long unitPrice;
 }

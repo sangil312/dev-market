@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS cart_item;
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE category (
@@ -16,6 +17,7 @@ CREATE TABLE category (
     updated_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
 
     UNIQUE KEY uk_name (name)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE product (
@@ -44,11 +46,15 @@ CREATE TABLE cart (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE cart_item (
-    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
-    cart_id         BIGINT        NOT NULL COMMENT '장바구니 ID',
-    product_id      BIGINT        NOT NULL COMMENT '상품 ID',
-    quantity        INT           NOT NULL DEFAULT 0 COMMENT '장바구니 상품 수량',
-    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
-    updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시'
+    id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
+    cart_id             BIGINT        NOT NULL COMMENT '장바구니 ID',
+    product_id          BIGINT        NOT NULL COMMENT '상품 ID',
+    quantity            INT           NOT NULL DEFAULT 0 COMMENT '상품 수량',
+    unit_price          BIGINT        NOT NULL DEFAULT 0 COMMENT '상품 개당 가격',
+    created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
+    updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
+
+    UNIQUE KEY uk_cart_id (cart_id),
+    UNIQUE KEY uk_product_id (product_id)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

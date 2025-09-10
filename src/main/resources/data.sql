@@ -1,8 +1,4 @@
-INSERT INTO users(name)
-VALUES
-    ('user1'),
-    ('user2'),
-    ('user3');
+INSERT INTO users(name) VALUES ('user1');
 
 INSERT INTO category (name)
 VALUES
@@ -51,3 +47,9 @@ VALUES
     (3, '음료30', 7000, 10),
     (3, '음료31', 7000, 10);
 
+INSERT INTO cart(user_id) VALUES(1);
+
+INSERT INTO cart_item(cart_id, product_id, quantity, unit_price)
+VALUES
+    (1, 1, 1, 150000),
+    (1, 2, 1, 200000);

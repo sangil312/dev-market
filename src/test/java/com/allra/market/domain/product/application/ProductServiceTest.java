@@ -3,8 +3,8 @@ package com.allra.market.domain.product.application;
 import static org.assertj.core.api.Assertions.*;
 
 import com.allra.market.IntegrationTestSupport;
-import com.allra.market.domain.product.application.request.ProductSearchCondition;
-import com.allra.market.domain.product.interfaces.response.ProductResponse;
+import com.allra.market.domain.product.application.dto.ProductSearchCondition;
+import com.allra.market.domain.product.application.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

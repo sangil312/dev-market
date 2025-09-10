@@ -1,5 +1,6 @@
 package com.allra.market.domain.cart.domain;
 
+import com.allra.market.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,4 +16,12 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private User user;
+
+    public static Cart createCart(User user) {
+        Cart cart = new Cart();
+        cart.user = user;
+        return cart;
+    }
 }

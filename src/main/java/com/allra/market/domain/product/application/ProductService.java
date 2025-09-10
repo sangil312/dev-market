@@ -1,8 +1,8 @@
 package com.allra.market.domain.product.application;
 
-import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.dto.ProductSearchCondition;
 import com.allra.market.domain.product.domain.repository.ProductRepository;
-import com.allra.market.domain.product.interfaces.response.ProductResponse;
+import com.allra.market.domain.product.application.dto.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
