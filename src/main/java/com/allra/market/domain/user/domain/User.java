@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +21,10 @@ public class User {
     private long id;
 
     private String name;
+
+    public static User create(String name) {
+        User user = new User();
+        user.name = name;
+        return user;
+    }
 }

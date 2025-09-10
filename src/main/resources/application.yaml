@@ -24,3 +24,22 @@ spring:
     web:
       pageable:
         max-page-size: 20 # Pageable 최대 size 설정
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+  sql:
+    init:
+      mode: never
+

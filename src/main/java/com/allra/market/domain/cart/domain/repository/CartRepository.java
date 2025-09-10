@@ -1,6 +1,7 @@
 package com.allra.market.domain.cart.domain.repository;
 
 import com.allra.market.domain.cart.domain.Cart;
+
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

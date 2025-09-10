@@ -1,6 +1,6 @@
-package com.allra.market.domain.category;
+package com.allra.market.domain.category.domain;
 
-import com.allra.market.common.BaseEntity;
+import com.allra.market.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,4 +21,10 @@ public class Category extends BaseEntity {
     private Long id;
 
     private String name;
+
+    public static Category create(String name) {
+        Category category = new Category();
+        category.name = name;
+        return category;
+    }
 }

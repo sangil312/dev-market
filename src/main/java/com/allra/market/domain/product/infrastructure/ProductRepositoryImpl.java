@@ -3,9 +3,9 @@ package com.allra.market.domain.product.infrastructure;
 import static com.allra.market.domain.product.domain.QProduct.product;
 
 import com.allra.market.domain.product.domain.repository.ProductRepositoryCustom;
-import com.allra.market.domain.product.application.dto.ProductSearchCondition;
-import com.allra.market.domain.product.application.dto.ProductResponse;
-import com.allra.market.domain.product.application.dto.QProductResponse;
+import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.dto.response.ProductResponse;
+import com.allra.market.domain.product.application.dto.response.QProductResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

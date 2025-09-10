@@ -1,4 +1,4 @@
-INSERT INTO users(name) VALUES ('user1');
+INSERT INTO users(name) VALUES ('user1'), ('user2');
 
 INSERT INTO category (name)
 VALUES
@@ -35,21 +35,12 @@ VALUES
     (3, '음료18', 6000, 10),
     (3, '음료19', 6000, 10),
     (3, '음료20', 6000, 10),
-    (3, '음료21', 6000, 10),
-    (3, '음료22', 7000, 10),
-    (3, '음료23', 7000, 10),
-    (3, '음료24', 7000, 10),
-    (3, '음료25', 7000, 10),
-    (3, '음료26', 7000, 10),
-    (3, '음료27', 7000, 10),
-    (3, '음료28', 7000, 10),
-    (3, '음료29', 7000, 10),
-    (3, '음료30', 7000, 10),
-    (3, '음료31', 7000, 10);
+    (3, '음료21', 6000, 10);
 
-INSERT INTO cart(user_id) VALUES(1);
+INSERT INTO cart(user_id) VALUES (1), (2);
 
 INSERT INTO cart_item(cart_id, product_id, quantity, unit_price)
 VALUES
     (1, 1, 1, 150000),
-    (1, 2, 1, 200000);
+    (1, 2, 2, 200000),
+    (2, 4, 1, 2000000);
