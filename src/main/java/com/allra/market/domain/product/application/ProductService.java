@@ -1,8 +1,8 @@
 package com.allra.market.domain.product.application;
 
-import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
 import com.allra.market.domain.product.domain.repository.ProductRepository;
-import com.allra.market.domain.product.interfaces.response.ProductResponse;
+import com.allra.market.domain.product.application.dto.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,10 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> searchProducts(ProductSearchCondition condition, Pageable pageable) {
+    public Page<ProductResponse> searchProducts(
+            final ProductSearchCondition condition,
+            final Pageable pageable
+    ) {
         return productRepository.search(condition, pageable);
     }
 }

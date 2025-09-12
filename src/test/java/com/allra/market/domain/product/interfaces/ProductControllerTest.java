@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.allra.market.ControllerTestSupport;
-import com.allra.market.domain.product.application.request.ProductSearchCondition;
-import com.allra.market.domain.product.interfaces.response.ProductResponse;
+import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.dto.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
@@ -25,19 +25,19 @@ class ProductControllerTest extends ControllerTestSupport {
     void searchProducts() throws Exception {
         // given
         ProductSearchCondition condition = ProductSearchCondition.builder()
-                .categoryId(2L)
-                .productName("아이폰")
-                .minPrice(10_000L)
-                .maxPrice(2_000_000L)
+                .categoryId(1L)
+                .productName("상품1")
+                .minPrice(1000L)
+                .maxPrice(2000L)
                 .build();
 
         ProductResponse content = ProductResponse.builder()
-                .productId(3L)
-                .categoryId(2L)
-                .productName("아이폰")
-                .price(1_900_000L)
-                .productQuantity(0)
-                .isSoldOut(true)
+                .productId(1L)
+                .categoryId(1L)
+                .productName("상품1")
+                .price(1000L)
+                .productQuantity(10)
+                .isSoldOut(false)
                 .build();
 
         PageImpl<ProductResponse> response = new PageImpl<>(
@@ -53,14 +53,13 @@ class ProductControllerTest extends ControllerTestSupport {
         mockMvc.perform(
                 get("/products")
                         .content(objectMapper.writeValueAsString(condition))
-                        .contentType(MediaType.APPLICATION_JSON)
-        )
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.content[0].productId").value(3L))
-                .andExpect(jsonPath("$.content[0].categoryId").value(2L))
-                .andExpect(jsonPath("$.content[0].productName").value("아이폰"))
-                .andExpect(jsonPath("$.content[0].price").value(1_900_000L))
-                .andExpect(jsonPath("$.content[0].productQuantity").value(0))
-                .andExpect(jsonPath("$.content[0].isSoldOut").value(true));
+                .andExpect(jsonPath("$.content[0].productId").value(1L))
+                .andExpect(jsonPath("$.content[0].categoryId").value(1L))
+                .andExpect(jsonPath("$.content[0].productName").value("상품1"))
+                .andExpect(jsonPath("$.content[0].price").value(1000L))
+                .andExpect(jsonPath("$.content[0].productQuantity").value(10))
+                .andExpect(jsonPath("$.content[0].isSoldOut").value(false));
     }
 }
