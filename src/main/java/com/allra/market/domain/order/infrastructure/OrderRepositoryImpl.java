@@ -23,6 +23,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
                 .selectFrom(order)
                 .join(order.orderItems, orderItem).fetchJoin()
                 .join(orderItem.product).fetchJoin()
+                .where(order.id.eq(orderId))
                 .fetchOne();
 
         return result == null ? Optional.empty() : Optional.of(result);

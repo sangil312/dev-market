@@ -99,10 +99,12 @@ CREATE TABLE payments (
     order_id        BIGINT       NOT NULL COMMENT '주문 ID',
     amount          BIGINT       NOT NULL COMMENT '결제 금액',
     status          VARCHAR(20)  NOT NULL COMMENT 'SUCCESS, FAILED',
-    transaction_id  VARCHAR(100) NOT NULL COMMENT '외부 결제 API 트랜잭션 ID',
+    transaction_id  VARCHAR(100) DEFAULT NULL COMMENT '외부 결제 API 트랜잭션 ID',
     created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_order_payments FOREIGN KEY (order_id) REFERENCES orders(id),
 
-    UNIQUE KEY uk_order_id(order_id)
+    UNIQUE KEY uk_order_id(order_id),
+    UNIQUE KEY uk_transaction_id(transaction_id)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -35,7 +35,7 @@ public class Payment extends BaseCreatedAtEntity {
         payment.order = order;
         payment.amount = result.totalPrice();
         payment.status = result.success() ? PaymentStatus.SUCCESS : PaymentStatus.FAILED;
-        payment.transactionId = result.transactionId() == null ? "N/A" : result.transactionId();
+        payment.transactionId = result.transactionId();
         return payment;
     }
 }
