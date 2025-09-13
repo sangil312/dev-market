@@ -10,7 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "cart_item")
+@Table(name = "cart_items")
 public class CartItem extends BaseEntity {
 
     @Id

@@ -2,10 +2,11 @@ package com.allra.market.domain.product.infrastructure;
 
 import static com.allra.market.domain.product.domain.QProduct.product;
 
+import com.allra.market.domain.product.domain.Product;
 import com.allra.market.domain.product.domain.repository.ProductRepositoryCustom;
-import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
-import com.allra.market.domain.product.application.dto.response.ProductResponse;
-import com.allra.market.domain.product.application.dto.response.QProductResponse;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.response.ProductResponse;
+import com.allra.market.domain.product.application.response.QProductResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -52,6 +53,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         priceLoe(condition.maxPrice()));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<Product> findAllWithPessimisticLockByIdIn(List<Long> productIds) {
+        return queryFactory
+                .selectFrom(product)
+                .where(product.id.in(productIds))
+                .fetch();
     }
 
     private BooleanExpression productNameEq(String productName) {

@@ -13,12 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.allra.market.ControllerTestSupport;
-import com.allra.market.domain.cart.application.dto.request.AddCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.DeleteCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.UpdateCartItemRequest;
-import com.allra.market.domain.cart.application.dto.response.CartAddResponse;
-import com.allra.market.domain.cart.application.dto.response.CartItemResponse;
-import com.allra.market.domain.cart.application.dto.response.CartResponse;
+import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemDeleteServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemUpdateServiceRequest;
+import com.allra.market.domain.cart.application.response.CartAddResponse;
+import com.allra.market.domain.cart.application.response.CartItemResponse;
+import com.allra.market.domain.cart.application.response.CartResponse;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ class CartControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                    get("/carts/me"))
+                    get("/api/carts/me"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cartId").value(1L))
@@ -67,15 +67,15 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품을 추가한다.")
     void addCartItem() throws Exception {
         // given
-        AddCartItemRequest request = new AddCartItemRequest(1L, 1);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(1L, 1);
 
         CartAddResponse response = new CartAddResponse(1L, 1);
 
-        when(cartService.addCartItem(anyLong(), any(AddCartItemRequest.class))).thenReturn(response);
+        when(cartService.addCartItem(anyLong(), any(CartItemAddServiceRequest.class))).thenReturn(response);
 
         // when // then
         mockMvc.perform(
-                post("/carts/items")
+                post("/api/carts/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -88,11 +88,11 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품 추가 시 상품 ID가 존재해야한다.")
     void addCartItemWithEmptyProductId() throws Exception {
         // given
-        AddCartItemRequest request = new AddCartItemRequest(null, 1);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(null, 1);
 
         // when // then
         mockMvc.perform(
-                        post("/carts/items")
+                        post("/api/carts/items")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -107,7 +107,7 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품 수정(수량)한다.")
     void updateCartItemQuantity() throws Exception {
         // given
-        UpdateCartItemRequest request = new UpdateCartItemRequest(1);
+        CartItemUpdateServiceRequest request = new CartItemUpdateServiceRequest(1);
 
         CartItemResponse response = CartItemResponse.builder()
                 .cartItemId(1L)
@@ -124,7 +124,7 @@ class CartControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                patch("/carts/{cartId}/items/{cartItemId}", 1L, 1L)
+                patch("/api/carts/{cartId}/items/{cartItemId}", 1L, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -142,11 +142,11 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품 수정(수량) 시 수량은 1개 이상이어야 한다.")
     void addCartItemWithPositiveQuantity() throws Exception {
         // given
-        UpdateCartItemRequest request = new UpdateCartItemRequest(0);
+        CartItemUpdateServiceRequest request = new CartItemUpdateServiceRequest(0);
 
         // when // then
         mockMvc.perform(
-                        patch("/carts/{cartId}/items/{cartItemId}", 1L, 1L)
+                        patch("/api/carts/{cartId}/items/{cartItemId}", 1L, 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -161,11 +161,11 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품을 삭제한다.")
     void deleteCartItem() throws Exception {
         // given
-        DeleteCartItemRequest request = new DeleteCartItemRequest(List.of(1L));
+        CartItemDeleteServiceRequest request = new CartItemDeleteServiceRequest(List.of(1L));
 
         // when // then
         mockMvc.perform(
-                delete("/carts/{cartId}/items", 1L)
+                delete("/api/carts/{cartId}/items", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         )
@@ -177,11 +177,11 @@ class CartControllerTest extends ControllerTestSupport {
     @DisplayName("장바구니에 상품을 삭제한다.")
     void deleteCartItemWithEmptyCartItemIds() throws Exception {
         // given
-        DeleteCartItemRequest request = new DeleteCartItemRequest(List.of());
+        CartItemDeleteServiceRequest request = new CartItemDeleteServiceRequest(List.of());
 
         // when // then
         mockMvc.perform(
-                        delete("/carts/{cartId}/items", 1L)
+                        delete("/api/carts/{cartId}/items", 1L)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())

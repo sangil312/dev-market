@@ -6,6 +6,7 @@ import static com.allra.market.domain.product.domain.QProduct.product;
 
 import com.allra.market.domain.cart.domain.Cart;
 import com.allra.market.domain.cart.domain.CartItem;
+import com.allra.market.domain.cart.domain.QCart;
 import com.allra.market.domain.cart.domain.repository.CartRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -34,7 +35,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
     public Optional<Cart> findCartByUserId(Long userId) {
         Cart result = queryFactory
                 .selectFrom(cart)
-                .leftJoin(cart.cartItemList, cartItem).fetchJoin()
+                .leftJoin(cart.cartItems, cartItem).fetchJoin()
                 .leftJoin(cartItem.product).fetchJoin()
                 .where(cart.user.id.eq(userId))
                 .fetchOne();
@@ -68,5 +69,18 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
                         cartItem.id.in(cartItemIds)
                 )
                 .execute();
+    }
+
+    @Override
+    public Optional<Cart> findCartWithProductsByUserIdAndCartId(Long userId, Long cartId) {
+        Cart result = queryFactory
+                .selectFrom(QCart.cart)
+                .leftJoin(QCart.cart.cartItems, cartItem).fetchJoin()
+                .leftJoin(cartItem.product).fetchJoin()
+                .where(
+                        QCart.cart.user.id.eq(userId),
+                        QCart.cart.id.eq(cartId))
+                .fetchOne();
+        return result == null ? Optional.empty() : Optional.of(result);
     }
 }

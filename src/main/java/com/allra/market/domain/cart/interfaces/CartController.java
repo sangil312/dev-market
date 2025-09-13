@@ -1,15 +1,15 @@
 package com.allra.market.domain.cart.interfaces;
 
 import com.allra.market.domain.cart.application.CartService;
-import com.allra.market.domain.cart.application.dto.response.CartAddResponse;
-import com.allra.market.domain.cart.application.dto.request.AddCartItemRequest;
-import com.allra.market.domain.cart.application.dto.response.CartItemResponse;
-import com.allra.market.domain.cart.application.dto.request.UpdateCartItemRequest;
-import com.allra.market.domain.cart.application.dto.response.CartResponse;
-import com.allra.market.domain.cart.application.dto.request.DeleteCartItemRequest;
+import com.allra.market.domain.cart.application.response.CartAddResponse;
+import com.allra.market.domain.cart.interfaces.request.CartItemAddRequest;
+import com.allra.market.domain.cart.application.response.CartItemResponse;
+import com.allra.market.domain.cart.interfaces.request.CartItemUpdateRequest;
+import com.allra.market.domain.cart.application.response.CartResponse;
+import com.allra.market.domain.cart.interfaces.request.CartItemDeleteRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,33 +24,34 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/carts/me")
+    @GetMapping("/api/carts/me")
     public ResponseEntity<CartResponse> findCart() {
         return ResponseEntity.ok(cartService.findCart(1L));
     }
 
-    @PostMapping("/carts/items")
+    @PostMapping("/api/carts/items")
     public ResponseEntity<CartAddResponse> addCartItem(
-            @Validated @RequestBody AddCartItemRequest request
+            @Valid @RequestBody CartItemAddRequest request
     ) {
-        return ResponseEntity.ok(cartService.addCartItem(1L, request));
+        return ResponseEntity.ok(cartService.addCartItem(1L, request.toServiceRequest()));
     }
 
-    @PatchMapping("/carts/{cartId}/items/{cartItemId}")
+    @PatchMapping("/api/carts/{cartId}/items/{cartItemId}")
     public ResponseEntity<CartItemResponse> updateCartItemQuantity(
             @PathVariable Long cartId,
             @PathVariable Long cartItemId,
-            @Validated @RequestBody UpdateCartItemRequest request
+            @Valid @RequestBody CartItemUpdateRequest request
     ) {
-        return ResponseEntity.ok(cartService.updateCartItem(1L, cartId, cartItemId, request));
+        return ResponseEntity.ok(
+                cartService.updateCartItem(1L, cartId, cartItemId, request.toServiceRequest()));
     }
 
-    @DeleteMapping("/carts/{cartId}/items")
+    @DeleteMapping("/api/carts/{cartId}/items")
     public ResponseEntity<Void> deleteCartItem(
             @PathVariable Long cartId,
-            @Validated @RequestBody DeleteCartItemRequest request
+            @Valid @RequestBody CartItemDeleteRequest request
     ) {
-        cartService.deleteCartItem(1L, cartId, request);
+        cartService.deleteCartItem(1L, cartId, request.toServiceRequest());
         return ResponseEntity.ok().build();
     }
 }

@@ -1,8 +1,8 @@
 package com.allra.market.domain.product.interfaces;
 
 import com.allra.market.domain.product.application.ProductService;
-import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
-import com.allra.market.domain.product.application.dto.response.ProductResponse;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/products")
+    @GetMapping("/api/products")
     public ResponseEntity<Page<ProductResponse>> searchProducts(
             ProductSearchCondition condition,
             Pageable pageable

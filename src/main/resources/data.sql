@@ -1,14 +1,14 @@
 INSERT INTO users(name) VALUES ('user1'), ('user2');
 
-INSERT INTO category (name)
+INSERT INTO categories(name)
 VALUES
     ('신발'),
     ('전자기기'),
     ('음료수');
 
-INSERT INTO product (category_id, name, price, quantity)
+INSERT INTO products(category_id, name, price, quantity)
 VALUES
-    (1, '나이키', 150000, 0),
+    (1, '나이키', 150000, 5),
     (1, '아디다스', 200000, 10),
 
     (2, '아이폰', 1900000, 0),
@@ -37,9 +37,9 @@ VALUES
     (3, '음료20', 6000, 10),
     (3, '음료21', 6000, 10);
 
-INSERT INTO cart(user_id) VALUES (1), (2);
+INSERT INTO carts(user_id) VALUES (1), (2);
 
-INSERT INTO cart_item(cart_id, product_id, quantity, unit_price)
+INSERT INTO cart_items(cart_id, product_id, quantity, unit_price)
 VALUES
     (1, 1, 1, 150000),
     (1, 2, 2, 200000),

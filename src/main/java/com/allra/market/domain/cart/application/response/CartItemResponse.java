@@ -1,4 +1,4 @@
-package com.allra.market.domain.cart.application.dto.response;
+package com.allra.market.domain.cart.application.response;
 
 import com.allra.market.domain.cart.domain.CartItem;
 import com.allra.market.domain.product.domain.Product;
@@ -6,21 +6,13 @@ import lombok.Builder;
 
 @Builder
 public record CartItemResponse(
-
         Long cartItemId,
-
         Long productId,
-
         String productName,
-
         Integer quantity,
-
         Long unitPrice,
-
         Long subTotalPrice,
-
         Boolean isSoldOut,
-
         Boolean quantityOver
 ) {
     public static CartItemResponse of(final CartItem item) {
@@ -33,7 +25,7 @@ public record CartItemResponse(
                 .unitPrice(item.getUnitPrice())
                 .subTotalPrice(item.getUnitPrice() * item.getQuantity())
                 .isSoldOut(product.getQuantity() == 0)
-                .quantityOver(product.isQuantityOver(item.getQuantity()))
+                .quantityOver(product.isQuantityLessThan(item.getQuantity()))
                 .build();
     }
 }
