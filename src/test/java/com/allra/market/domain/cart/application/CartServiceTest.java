@@ -8,12 +8,12 @@ import static org.assertj.core.api.Assertions.tuple;
 import com.allra.market.IntegrationTestSupport;
 import com.allra.market.common.exception.NotFoundException;
 import com.allra.market.common.exception.QuantityOverException;
-import com.allra.market.domain.cart.application.dto.request.AddCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.DeleteCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.UpdateCartItemRequest;
-import com.allra.market.domain.cart.application.dto.response.CartAddResponse;
-import com.allra.market.domain.cart.application.dto.response.CartItemResponse;
-import com.allra.market.domain.cart.application.dto.response.CartResponse;
+import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemDeleteServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemUpdateServiceRequest;
+import com.allra.market.domain.cart.application.response.CartAddResponse;
+import com.allra.market.domain.cart.application.response.CartItemResponse;
+import com.allra.market.domain.cart.application.response.CartResponse;
 import com.allra.market.domain.cart.domain.Cart;
 import com.allra.market.domain.cart.domain.repository.CartRepository;
 import com.allra.market.domain.category.domain.Category;
@@ -33,22 +33,22 @@ import org.springframework.transaction.annotation.Transactional;
 class CartServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    CartService cartService;
+    private CartService cartService;
 
     @Autowired
-    CartRepository cartRepository;
+    private CartRepository cartRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    EntityManager em;
+    private EntityManager em;
 
     @Test
     @DisplayName("장바구니 상품 목록을 조회한다.")
@@ -66,8 +66,8 @@ class CartServiceTest extends IntegrationTestSupport {
 
         Cart cart = cartRepository.save(Cart.create(user));
 
-        AddCartItemRequest cartItem1 = new AddCartItemRequest(product1.getId(), 1);
-        AddCartItemRequest cartItem2 = new AddCartItemRequest(product2.getId(), 6);
+        CartItemAddServiceRequest cartItem1 = new CartItemAddServiceRequest(product1.getId(), 1);
+        CartItemAddServiceRequest cartItem2 = new CartItemAddServiceRequest(product2.getId(), 6);
         cart.addCartItem(product1, cartItem1);
         cart.addCartItem(product2, cartItem2);
 
@@ -75,7 +75,7 @@ class CartServiceTest extends IntegrationTestSupport {
         CartResponse response = cartService.findCart(user.getId());
 
         // then
-        assertThat(response.cartId()).isNotNull();
+        assertThat(response.cartId()).isEqualTo(cart.getId());
         assertThat(response.totalItemsQuantity()).isEqualTo(2);
         assertThat(response.totalPrice()).isEqualTo(7000L);
         assertThat(response.items()).hasSize(2)
@@ -127,16 +127,16 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.saveAll(List.of(product1, product2));
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem1 = new AddCartItemRequest(product1.getId(), 1);
+        CartItemAddServiceRequest cartItem1 = new CartItemAddServiceRequest(product1.getId(), 1);
         cart.addCartItem(product1, cartItem1);
 
-        AddCartItemRequest request = new AddCartItemRequest(product2.getId(), 1);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(product2.getId(), 1);
 
         // when
         CartAddResponse response = cartService.addCartItem(user.getId(), request);
 
         // then
-        Integer savedCartItemQuantity = cart.getCartItemList().get(0).getQuantity();
+        Integer savedCartItemQuantity = cart.getCartItems().get(0).getQuantity();
         assertThat(response.cartId()).isNotNull();
         assertThat(response.cartBadgeCount()).isEqualTo(2);
         assertThat(savedCartItemQuantity).isEqualTo(1);
@@ -156,16 +156,16 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.save(product);
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem = new AddCartItemRequest(product.getId(), 5);
+        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 5);
         cart.addCartItem(product, cartItem);
 
-        AddCartItemRequest request = new AddCartItemRequest(product.getId(), 1);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(product.getId(), 1);
 
         // when
         CartAddResponse response = cartService.addCartItem(user.getId(), request);
 
         // then
-        Integer savedCartItemQuantity = cart.getCartItemList().get(0).getQuantity();
+        Integer savedCartItemQuantity = cart.getCartItems().get(0).getQuantity();
         assertThat(response.cartId()).isNotNull();
         assertThat(response.cartBadgeCount()).isEqualTo(1);
         assertThat(savedCartItemQuantity).isEqualTo(1);
@@ -180,7 +180,7 @@ class CartServiceTest extends IntegrationTestSupport {
 
         cartRepository.save(Cart.create(user));
 
-        AddCartItemRequest request = new AddCartItemRequest(9999L, 1);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(9999L, 1);
 
         // when // then
         assertThatThrownBy(() -> cartService.addCartItem(user.getId(), request))
@@ -200,7 +200,7 @@ class CartServiceTest extends IntegrationTestSupport {
         Product product = Product.create(category, "상품1", 1000L, 1);
         productRepository.save(product);
 
-        AddCartItemRequest request = new AddCartItemRequest(product.getId(), 2);
+        CartItemAddServiceRequest request = new CartItemAddServiceRequest(product.getId(), 2);
 
         // when // then
         assertThatThrownBy(() -> cartService.addCartItem(user.getId(), request))
@@ -221,14 +221,14 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.save(product);
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem = new AddCartItemRequest(product.getId(), 1);
+        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 1);
         cart.addCartItem(product, cartItem);
 
         em.flush();
 
-        UpdateCartItemRequest request = new UpdateCartItemRequest(5);
+        CartItemUpdateServiceRequest request = new CartItemUpdateServiceRequest(5);
 
-        Long savedCartItemId = cart.getCartItemList().get(0).getId();
+        Long savedCartItemId = cart.getCartItems().get(0).getId();
 
         // when
         CartItemResponse response = cartService.updateCartItem(
@@ -259,10 +259,10 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.save(product);
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem = new AddCartItemRequest(product.getId(), 1);
+        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 1);
         cart.addCartItem(product, cartItem);
 
-        UpdateCartItemRequest request = new UpdateCartItemRequest(1);
+        CartItemUpdateServiceRequest request = new CartItemUpdateServiceRequest(1);
 
         Long notExistCartId = 99L;
         Long notExistCartItemId = 99L;
@@ -286,14 +286,14 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.save(product);
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem = new AddCartItemRequest(product.getId(), 1);
+        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 1);
         cart.addCartItem(product, cartItem);
 
         em.flush();
 
-        Long savedCartItemId = cart.getCartItemList().get(0).getId();
+        Long savedCartItemId = cart.getCartItems().get(0).getId();
 
-        UpdateCartItemRequest request = new UpdateCartItemRequest(2);
+        CartItemUpdateServiceRequest request = new CartItemUpdateServiceRequest(2);
 
         // when // then
         assertThatThrownBy(() -> cartService.updateCartItem(user.getId(), cart.getId(), savedCartItemId, request))
@@ -314,14 +314,14 @@ class CartServiceTest extends IntegrationTestSupport {
         productRepository.save(product);
 
         Cart cart = cartRepository.save(Cart.create(user));
-        AddCartItemRequest cartItem = new AddCartItemRequest(product.getId(), 1);
+        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 1);
         cart.addCartItem(product, cartItem);
 
         em.flush();
 
-        Long savedCartItemId = cart.getCartItemList().get(0).getId();
+        Long savedCartItemId = cart.getCartItems().get(0).getId();
 
-        DeleteCartItemRequest request = new DeleteCartItemRequest(List.of(savedCartItemId));
+        CartItemDeleteServiceRequest request = new CartItemDeleteServiceRequest(List.of(savedCartItemId));
 
         // when
         cartService.deleteCartItem(user.getId(), cart.getId(), request);
@@ -330,6 +330,6 @@ class CartServiceTest extends IntegrationTestSupport {
         em.flush();
         em.clear();
         Cart after = cartRepository.findById(cart.getId()).orElseThrow();
-        assertThat(after.getCartItemList()).isEmpty();
+        assertThat(after.getCartItems()).isEmpty();
     }
 }

@@ -1,22 +1,20 @@
 package com.allra.market.domain.product.domain;
 
 import com.allra.market.common.entity.BaseEntity;
+import com.allra.market.domain.cart.domain.CartItem;
 import com.allra.market.domain.category.domain.Category;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "product")
+@Table(name = "products")
 public class Product extends BaseEntity {
 
     @Id
@@ -32,6 +30,9 @@ public class Product extends BaseEntity {
 
     private Integer quantity;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>();
+
     /* 정적 팩토리 메서드 */
     public static Product create(Category category, String name, Long price, Integer quantity) {
         Product product = new Product();
@@ -43,7 +44,15 @@ public class Product extends BaseEntity {
     }
 
     /* 비지니스 메서드 */
-    public boolean isQuantityOver(int quantity) {
+    public boolean isQuantityLessThan(int quantity) {
         return this.quantity < quantity;
+    }
+
+    public void decreaseQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
+
+    public void increaseQuantity(int quantity) {
+        this.quantity += quantity;
     }
 }

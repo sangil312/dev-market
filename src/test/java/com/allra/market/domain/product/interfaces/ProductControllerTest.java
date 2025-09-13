@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.allra.market.ControllerTestSupport;
-import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
-import com.allra.market.domain.product.application.dto.response.ProductResponse;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
@@ -51,7 +51,7 @@ class ProductControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/products")
+                get("/api/products")
                         .content(objectMapper.writeValueAsString(condition))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

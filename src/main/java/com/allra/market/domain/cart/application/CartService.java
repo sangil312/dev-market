@@ -2,12 +2,12 @@ package com.allra.market.domain.cart.application;
 
 import com.allra.market.common.exception.NotFoundException;
 import com.allra.market.common.exception.QuantityOverException;
-import com.allra.market.domain.cart.application.dto.request.AddCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.DeleteCartItemRequest;
-import com.allra.market.domain.cart.application.dto.request.UpdateCartItemRequest;
-import com.allra.market.domain.cart.application.dto.response.CartAddResponse;
-import com.allra.market.domain.cart.application.dto.response.CartItemResponse;
-import com.allra.market.domain.cart.application.dto.response.CartResponse;
+import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemDeleteServiceRequest;
+import com.allra.market.domain.cart.application.request.CartItemUpdateServiceRequest;
+import com.allra.market.domain.cart.application.response.CartAddResponse;
+import com.allra.market.domain.cart.application.response.CartItemResponse;
+import com.allra.market.domain.cart.application.response.CartResponse;
 import com.allra.market.domain.cart.domain.Cart;
 import com.allra.market.domain.cart.domain.CartItem;
 import com.allra.market.domain.cart.domain.repository.CartRepository;
@@ -50,7 +50,7 @@ public class CartService {
     }
 
     @Transactional
-    public CartAddResponse addCartItem(final Long userId, final AddCartItemRequest request) {
+    public CartAddResponse addCartItem(final Long userId, final CartItemAddServiceRequest request) {
         // 토큰 or 세션에서 user_id 추출했다고 가정
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
@@ -61,14 +61,14 @@ public class CartService {
         Cart cart = cartRepository.findCartByUserId(user.getId())
                 .orElseGet(() -> cartRepository.save(Cart.create(user)));
 
-        Optional<CartItem> existCartItem = cart.getCartItemList().stream()
+        Optional<CartItem> existCartItem = cart.getCartItems().stream()
                 .filter(item -> item.getProduct().getId().equals(request.productId()))
                 .findFirst();
 
         Integer itemQuantity = existCartItem.map(CartItem::getQuantity).orElse(0);
         int totalQuantity = itemQuantity + request.quantity();
 
-        if (product.isQuantityOver(totalQuantity)) {
+        if (product.isQuantityLessThan(totalQuantity)) {
             throw new QuantityOverException(PRODUCT_QUANTITY_OVER);
         }
 
@@ -77,7 +77,7 @@ public class CartService {
                 () -> cart.addCartItem(product, request)
         );
 
-        return CartAddResponse.of(cart.getId(), cart.getCartItemList().size());
+        return CartAddResponse.of(cart.getId(), cart.getCartItems().size());
     }
 
     @Transactional
@@ -85,7 +85,7 @@ public class CartService {
             final Long userId,
             final Long cartId,
             final Long cartItemId,
-            final UpdateCartItemRequest request
+            final CartItemUpdateServiceRequest request
     ) {
         // 토큰 or 세션에서 user_id 추출했다고 가정
         User user = userRepository.findById(userId)
@@ -94,7 +94,7 @@ public class CartService {
         CartItem item = cartRepository.findCartItem(user.getId(), cartId, cartItemId)
                 .orElseThrow(() -> new NotFoundException(PRODUCT_NOT_FOUND));
 
-        if (item.getProduct().isQuantityOver(request.quantity())) {
+        if (item.getProduct().isQuantityLessThan(request.quantity())) {
             throw new QuantityOverException(PRODUCT_QUANTITY_OVER);
         }
 
@@ -104,7 +104,11 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCartItem(final Long userId, final Long cartId, final DeleteCartItemRequest request) {
+    public void deleteCartItem(
+            final Long userId,
+            final Long cartId,
+            final CartItemDeleteServiceRequest request
+    ) {
         // 토큰 or 세션에서 user_id 추출했다고 가정
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));

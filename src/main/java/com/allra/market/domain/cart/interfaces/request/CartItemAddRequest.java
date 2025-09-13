@@ -1,9 +1,10 @@
-package com.allra.market.domain.cart.application.dto.request;
+package com.allra.market.domain.cart.interfaces.request;
 
+import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record AddCartItemRequest(
+public record CartItemAddRequest(
 
         @NotNull(message = "상품 ID가 존재하지 않습니다.")
         @Positive(message = "상품 ID가 존재하지 않습니다.")
@@ -13,4 +14,7 @@ public record AddCartItemRequest(
         @Positive(message = "수량은 1개 이상이어야 합니다.")
         Integer quantity
 ) {
+        public CartItemAddServiceRequest toServiceRequest() {
+                return new CartItemAddServiceRequest(productId, quantity);
+        }
 }

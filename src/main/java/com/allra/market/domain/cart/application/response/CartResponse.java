@@ -1,17 +1,13 @@
-package com.allra.market.domain.cart.application.dto.response;
+package com.allra.market.domain.cart.application.response;
 
 import java.util.List;
 import lombok.Builder;
 
 @Builder
 public record CartResponse(
-
         long cartId,
-
         int totalItemsQuantity,
-
         long totalPrice,
-
         List<CartItemResponse> items
 ) {
     public static CartResponse of(

@@ -3,14 +3,12 @@ package com.allra.market.domain.product.application;
 import static org.assertj.core.api.Assertions.*;
 
 import com.allra.market.IntegrationTestSupport;
-import com.allra.market.domain.cart.domain.repository.CartRepository;
 import com.allra.market.domain.category.domain.Category;
 import com.allra.market.domain.category.repository.CategoryRepository;
-import com.allra.market.domain.product.application.dto.request.ProductSearchCondition;
-import com.allra.market.domain.product.application.dto.response.ProductResponse;
+import com.allra.market.domain.product.application.request.ProductSearchCondition;
+import com.allra.market.domain.product.application.response.ProductResponse;
 import com.allra.market.domain.product.domain.Product;
 import com.allra.market.domain.product.domain.repository.ProductRepository;
-import com.allra.market.domain.user.domain.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,19 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @Autowired
-    CartRepository cartRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Test
     @DisplayName("상품 조회 시 검색 조건 없이 요청 사이즈로 조회한다.")
