@@ -104,6 +104,5 @@ CREATE TABLE payments (
 
     CONSTRAINT fk_order_payments FOREIGN KEY (order_id) REFERENCES orders(id),
 
-    UNIQUE KEY uk_order_id(order_id),
-    UNIQUE KEY uk_transaction_id(transaction_id)
+    UNIQUE KEY uk_order_id(order_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
