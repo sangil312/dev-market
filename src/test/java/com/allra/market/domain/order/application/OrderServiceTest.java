@@ -10,6 +10,7 @@ import com.allra.market.domain.cart.domain.repository.CartRepository;
 import com.allra.market.domain.category.domain.Category;
 import com.allra.market.domain.category.repository.CategoryRepository;
 import com.allra.market.domain.order.application.repuest.OrderCreateServiceRequest;
+import com.allra.market.domain.order.application.response.OrderCreateResponse;
 import com.allra.market.domain.order.domain.Order;
 import com.allra.market.domain.order.domain.enums.OrderStatus;
 import com.allra.market.domain.product.domain.Product;
@@ -73,7 +74,8 @@ class OrderServiceTest extends IntegrationTestSupport {
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), cartItemIds);
 
         //when
-        Order response = orderService.createOrderAndProductStockDecreases(user.getId(), request, LocalDateTime.now());
+        OrderCreateResponse orderCreateResponse = orderService.createOrderAndProductStockDecreases(user.getId(), request, LocalDateTime.now());
+        Order response = orderCreateResponse.order();
 
         //then
         assertThat(response).isNotNull();

@@ -22,7 +22,6 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
 
     @Override
     public List<CartItem> findCartItemsByCartId(Long cartId) {
-
         return queryFactory
                 .select(cartItem)
                 .from(cartItem)

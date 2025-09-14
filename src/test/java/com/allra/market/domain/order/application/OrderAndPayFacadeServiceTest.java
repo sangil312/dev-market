@@ -5,6 +5,7 @@ import com.allra.market.IntegrationTestSupport;
 import com.allra.market.common.exception.dto.ExternalApiException;
 import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
 import com.allra.market.domain.cart.domain.Cart;
+import com.allra.market.domain.cart.domain.CartItem;
 import com.allra.market.domain.cart.domain.repository.CartRepository;
 import com.allra.market.domain.category.domain.Category;
 import com.allra.market.domain.category.repository.CategoryRepository;
@@ -89,6 +90,9 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
         // 재고차감
         Product result = productRepository.findById(product.getId()).get();
         assertThat(result.getQuantity()).isEqualTo(9);
+        // 장바구니 상품 삭제
+        List<CartItem> cartItems = cartRepository.findCartItemsByCartId(cart.getId());
+        assertThat(cartItems).isEmpty();
         // 주문 상태 변경
         Order order = orderRepository.findById(response.orderId()).get();
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
@@ -133,6 +137,9 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
         // 재고차감
         Product result = productRepository.findById(product.getId()).get();
         assertThat(result.getQuantity()).isEqualTo(10);
+        // 장바구니 상품 삭제
+        List<CartItem> cartItems = cartRepository.findCartItemsByCartId(cart.getId());
+        assertThat(cartItems).isNotEmpty();
         // 주문 상태 변경
         Order order = orderRepository.findById(response.orderId()).get();
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAYMENT_FAILED);

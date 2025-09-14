@@ -6,6 +6,7 @@ import com.allra.market.domain.cart.domain.Cart;
 import com.allra.market.domain.cart.domain.CartItem;
 import com.allra.market.domain.cart.domain.repository.CartRepository;
 import com.allra.market.domain.order.application.repuest.OrderCreateServiceRequest;
+import com.allra.market.domain.order.application.response.OrderCreateResponse;
 import com.allra.market.domain.order.domain.Order;
 import com.allra.market.domain.order.domain.OrderItem;
 import com.allra.market.domain.order.domain.repository.OrderRepository;
@@ -39,7 +40,7 @@ public class OrderService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public Order createOrderAndProductStockDecreases(
+    public OrderCreateResponse createOrderAndProductStockDecreases(
             final Long userId,
             final OrderCreateServiceRequest request,
             final LocalDateTime createdAt
@@ -57,7 +58,7 @@ public class OrderService {
         Order order = Order.create(user, cartItems, createdAt);
         orderRepository.save(order);
 
-        return order;
+        return OrderCreateResponse.of(userId, request.cartId(), order, cartItems);
     }
 
     private List<CartItem> cartItemsExtract(Cart cart, List<Long> requestCartItemIds) {
