@@ -1,5 +1,6 @@
 package com.allra.market.domain.order.application;
 
+import com.allra.market.common.exception.AlreadyOrderCompletedException;
 import com.allra.market.common.exception.NotFoundException;
 import com.allra.market.common.exception.QuantityOverException;
 import com.allra.market.domain.cart.domain.Cart;
@@ -41,12 +42,18 @@ public class OrderService {
 
     @Transactional
     public OrderCreateResponse createOrderAndProductStockDecreases(
+            final String idempotencyKey,
             final Long userId,
             final OrderCreateServiceRequest request,
             final LocalDateTime createdAt
     ) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+
+        boolean alreadyOrderCompleted = orderRepository.existsByIdempotencyKey(idempotencyKey);
+        if (alreadyOrderCompleted) {
+            throw new AlreadyOrderCompletedException(ORDER_COMPLETED);
+        }
 
         Cart cart = cartRepository.findCartWithProductsByUserIdAndCartId(userId, request.cartId())
                 .orElseThrow(() -> new NotFoundException(CART_ITEM_NOT_FOUND));
@@ -55,7 +62,7 @@ public class OrderService {
 
         productDecreasesStock(cartItems);
 
-        Order order = Order.create(user, cartItems, createdAt);
+        Order order = Order.create(idempotencyKey, user, cartItems, createdAt);
         orderRepository.save(order);
 
         return OrderCreateResponse.of(userId, request.cartId(), order, cartItems);

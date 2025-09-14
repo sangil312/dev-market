@@ -59,6 +59,7 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
     @Test
     void createOrderAndPay() {
         //given
+        String idempotencyKey = "idempotencyKey";
         User user = User.create("user1");
         userRepository.save(user);
 
@@ -81,7 +82,7 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
                         1L, 1000L, true, "txn_123456", null));
 
         //when
-        OrderResponse response = orderAndPayFacadeService.createOrderAndPay(user.getId(), request, LocalDateTime.now());
+        OrderResponse response = orderAndPayFacadeService.createOrderAndPay(idempotencyKey, user.getId(), request, LocalDateTime.now());
 
         //then
         assertThat(response).isNotNull();
@@ -106,6 +107,8 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
     @Test
     void createOrderAndPayWithPaymentApiFailed() {
         //given
+        String idempotencyKey = "idempotencyKey";
+
         User user = User.create("user1");
         userRepository.save(user);
 
@@ -128,7 +131,7 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
                 .thenThrow(ExternalApiException.class);
 
         //when
-        OrderResponse response = orderAndPayFacadeService.createOrderAndPay(user.getId(), request, LocalDateTime.now());
+        OrderResponse response = orderAndPayFacadeService.createOrderAndPay(idempotencyKey, user.getId(), request, LocalDateTime.now());
 
         //then
         assertThat(response).isNotNull();

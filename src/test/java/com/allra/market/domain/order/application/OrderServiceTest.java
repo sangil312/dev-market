@@ -2,6 +2,7 @@ package com.allra.market.domain.order.application;
 
 
 import com.allra.market.IntegrationTestSupport;
+import com.allra.market.common.exception.AlreadyOrderCompletedException;
 import com.allra.market.common.exception.NotFoundException;
 import com.allra.market.common.exception.QuantityOverException;
 import com.allra.market.domain.cart.application.request.CartItemAddServiceRequest;
@@ -13,6 +14,7 @@ import com.allra.market.domain.order.application.repuest.OrderCreateServiceReque
 import com.allra.market.domain.order.application.response.OrderCreateResponse;
 import com.allra.market.domain.order.domain.Order;
 import com.allra.market.domain.order.domain.enums.OrderStatus;
+import com.allra.market.domain.order.domain.repository.OrderRepository;
 import com.allra.market.domain.product.domain.Product;
 import com.allra.market.domain.product.domain.repository.ProductRepository;
 import com.allra.market.domain.user.domain.User;
@@ -34,6 +36,8 @@ class OrderServiceTest extends IntegrationTestSupport {
     @Autowired
     private OrderService orderService;
     @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
     private CartRepository cartRepository;
     @Autowired
     private UserRepository userRepository;
@@ -48,6 +52,8 @@ class OrderServiceTest extends IntegrationTestSupport {
     @Test
     void createOrderAndProductStockDecreases() {
         //given
+        String idempotencyKey = "idempotencyKey";
+
         User user = User.create("user1");
         userRepository.save(user);
 
@@ -74,7 +80,7 @@ class OrderServiceTest extends IntegrationTestSupport {
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), cartItemIds);
 
         //when
-        OrderCreateResponse orderCreateResponse = orderService.createOrderAndProductStockDecreases(user.getId(), request, LocalDateTime.now());
+        OrderCreateResponse orderCreateResponse = orderService.createOrderAndProductStockDecreases(idempotencyKey, user.getId(), request, LocalDateTime.now());
         Order response = orderCreateResponse.order();
 
         //then
@@ -96,6 +102,8 @@ class OrderServiceTest extends IntegrationTestSupport {
     @Test
     void createOrderAndProductStockDecreasesWithProductStockLess() {
         //given
+        String idempotencyKey = "idempotencyKey";
+
         User user = User.create("user1");
         userRepository.save(user);
 
@@ -122,7 +130,7 @@ class OrderServiceTest extends IntegrationTestSupport {
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), cartItemIds);
 
         //when //then
-        assertThatThrownBy(() -> orderService.createOrderAndProductStockDecreases(user.getId(), request, LocalDateTime.now()))
+        assertThatThrownBy(() -> orderService.createOrderAndProductStockDecreases(idempotencyKey, user.getId(), request, LocalDateTime.now()))
                 .isInstanceOf(QuantityOverException.class);
     }
 
@@ -130,6 +138,8 @@ class OrderServiceTest extends IntegrationTestSupport {
     @Test
     void createOrderAndProductStockDecreasesWithProductNotExist() {
         //given
+        String idempotencyKey = "idempotencyKey";
+
         User user = User.create("user1");
         userRepository.save(user);
 
@@ -150,7 +160,40 @@ class OrderServiceTest extends IntegrationTestSupport {
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), List.of(99L, 100L));
 
         //when //then
-        assertThatThrownBy(() -> orderService.createOrderAndProductStockDecreases(1L, request, LocalDateTime.now()))
+        assertThatThrownBy(() -> orderService.createOrderAndProductStockDecreases(idempotencyKey, 1L, request, LocalDateTime.now()))
                 .isInstanceOf(NotFoundException.class);
+    }
+
+    @DisplayName("주문 생성 시 동일한 멱등성 키 주문은 예외가 발생한다.")
+    @Test
+    void createOrderAndProductStockDecreasesWithIdempotencyKeyExist() {
+        //given
+        String idempotencyKey = "idempotencyKey";
+
+        User user = User.create("user1");
+        userRepository.save(user);
+
+        Category category = Category.create("카테고리1");
+        categoryRepository.save(category);
+
+        Product product1 = Product.create(category, "상품1", 1000L, 10);
+        Product product2 = Product.create(category, "상품2", 1000L, 10);
+        productRepository.saveAll(List.of(product1, product2));
+
+        Cart cart = cartRepository.save(Cart.create(user));
+
+        CartItemAddServiceRequest cartItem1 = new CartItemAddServiceRequest(1L, 1);
+        CartItemAddServiceRequest cartItem2 = new CartItemAddServiceRequest(2L, 1);
+        cart.addCartItem(product1, cartItem1);
+        cart.addCartItem(product2, cartItem2);
+
+        Order order = Order.create(idempotencyKey, user, cart.getCartItems(), LocalDateTime.now());
+        orderRepository.save(order);
+
+        OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), List.of(99L, 100L));
+
+        //when //then
+        assertThatThrownBy(() -> orderService.createOrderAndProductStockDecreases(idempotencyKey, user.getId(), request, LocalDateTime.now()))
+                .isInstanceOf(AlreadyOrderCompletedException.class);
     }
 }

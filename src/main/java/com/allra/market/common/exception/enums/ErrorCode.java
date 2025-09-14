@@ -15,6 +15,7 @@ public enum ErrorCode {
 
     /* 409 CONFLICT */
     PRODUCT_QUANTITY_OVER(HttpStatus.CONFLICT, "상품 재고가 부족합니다."),
+    ORDER_COMPLETED(HttpStatus.CONFLICT, "결제가 완료된 상품입니다."),
 
     /* 500 */
     PAYMENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "결제에 실패했습니다.")

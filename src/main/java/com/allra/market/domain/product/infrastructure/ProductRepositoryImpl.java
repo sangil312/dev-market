@@ -11,6 +11,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +62,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return queryFactory
                 .selectFrom(product)
                 .where(product.id.in(productIds))
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetch();
     }
 

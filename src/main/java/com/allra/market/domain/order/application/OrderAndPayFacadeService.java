@@ -31,13 +31,14 @@ public class OrderAndPayFacadeService {
     private final PaymentApiService paymentApiService;
 
     public OrderResponse createOrderAndPay(
+            final String idempotencyKey,
             final Long userId,
             final OrderCreateServiceRequest request,
             final LocalDateTime createdAt
     ) {
         // 주문 생성 및 상품 재고 차감
         OrderCreateResponse orderCreateResponse = orderService.createOrderAndProductStockDecreases(
-                userId, request, createdAt);
+                idempotencyKey, userId, request, createdAt);
 
         Order createdOrder = orderCreateResponse.order();
 

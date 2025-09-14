@@ -1,8 +1,7 @@
 package com.allra.market.domain.order.interfaces;
 
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,14 +27,15 @@ class OrderControllerTest extends ControllerTestSupport {
 
         OrderResponse response = OrderResponse.of(1L, 1L, true);
 
-        when(orderAndPayFacadeService.createOrderAndPay(anyLong(), any(), any()))
+        when(orderAndPayFacadeService.createOrderAndPay(anyString(), anyLong(), any(), any()))
                 .thenReturn(response);
 
         //when //then
         mockMvc.perform(
-                post("/api/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        post("/api/orders")
+                                .header("Idempotency-Key", "idempotencyKey")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(1L))
@@ -52,12 +52,13 @@ class OrderControllerTest extends ControllerTestSupport {
 
         OrderResponse response = OrderResponse.of(1L, 1L, false);
 
-        when(orderAndPayFacadeService.createOrderAndPay(anyLong(), any(), any()))
+        when(orderAndPayFacadeService.createOrderAndPay(anyString(), anyLong(), any(), any()))
                 .thenReturn(response);
 
         //when //then
         mockMvc.perform(
                         post("/api/orders")
+                                .header("Idempotency-Key", "idempotencyKey")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
@@ -66,5 +67,53 @@ class OrderControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.paymentId").value(1L))
                 .andExpect(jsonPath("$.success").value(false))
                 .andExpect(jsonPath("$.message").value("결제에 실패했습니다."));
+    }
+
+    @DisplayName("주문 요청 시 장바구니 ID 값이 없으면 오류메세지를 응답한다.")
+    @Test
+    void createOrderAndPayWithCartItemsEmpty() throws Exception {
+        //given
+        OrderCreateRequest request = new OrderCreateRequest(1L, null);
+
+        OrderResponse response = OrderResponse.of(1L, 1L, false);
+
+        when(orderAndPayFacadeService.createOrderAndPay(anyString(), anyLong(), any(), any()))
+                .thenReturn(response);
+
+        //when //then
+        mockMvc.perform(
+                        post("/api/orders")
+                                .header("Idempotency-Key", "idempotencyKey")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("장바구니에 상품을 선택해주세요."));
+    }
+
+    @DisplayName("주문 요청 시 멱등성 키가 없으면 오류 메세지를 응답한다.")
+    @Test
+    void createOrderAndPayWithIdempotencyKeyEmpty() throws Exception {
+        //given
+        OrderCreateRequest request = new OrderCreateRequest(1L, List.of(1L, 2L));
+
+        OrderResponse response = OrderResponse.of(1L, 1L, false);
+
+        when(orderAndPayFacadeService.createOrderAndPay(anyString(), anyLong(), any(), any()))
+                .thenReturn(response);
+
+        //when //then
+        mockMvc.perform(
+                        post("/api/orders")
+                                .header("Idempotency-Key", "")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.statusCode").value(400))
+                .andExpect(jsonPath("$.message").value("멱등성 키는 필수입니다."));
     }
 }

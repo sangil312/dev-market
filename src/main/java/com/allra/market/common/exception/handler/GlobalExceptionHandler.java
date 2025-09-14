@@ -3,6 +3,10 @@ package com.allra.market.common.exception.handler;
 import com.allra.market.common.exception.CustomException;
 import com.allra.market.common.exception.dto.ErrorResponse;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -38,5 +42,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getErrorCode().getHttpStatus(),
                 ex.getErrorCode().getMessage()
         );
+    }
+
+   @ExceptionHandler(ConstraintViolationException.class)
+   public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex) {
+        String message = ex.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.joining(","));
+
+       return ResponseEntity.badRequest()
+               .body(ErrorResponse.of(HttpStatus.BAD_REQUEST, message));
     }
 }

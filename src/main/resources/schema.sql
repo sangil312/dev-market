@@ -73,12 +73,15 @@ CREATE TABLE cart_items (
 CREATE TABLE orders (
     id              BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id         BIGINT      NOT NULL COMMENT '사용자 ID',
+    idempotency_key VARCHAR(50) NOT NULL COMMENT '주문 멱등성 KEY',
     total_price     BIGINT      NOT NULL COMMENT '주문 금액',
     status          VARCHAR(20) NOT NULL COMMENT 'CREATED, PAYMENT_FAILED, PAID, CANCELED',
     created_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_users_orders FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT fk_users_orders FOREIGN KEY (user_id) REFERENCES users(id),
+
+    UNIQUE KEY uk_idempotency_key (idempotency_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE order_items (

@@ -28,6 +28,8 @@ public class Order extends BaseUpdatedAtEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    private String idempotencyKey;
+
     private Long totalPrice;
 
     @Enumerated(EnumType.STRING)
@@ -40,11 +42,13 @@ public class Order extends BaseUpdatedAtEntity {
 
     /* 정적 팩토리 메서드 */
     public static Order create(
+            final String idempotencyKey,
             final User user,
             final List<CartItem> cartItems,
             LocalDateTime createdAt
     ) {
         Order order = new Order();
+        order.idempotencyKey = idempotencyKey;
         order.user = user;
         order.totalPrice = calculateTotalPrice(cartItems);
         order.status = OrderStatus.CREATED;

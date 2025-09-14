@@ -1,9 +1,9 @@
 spring:
   # DB 접속 정보
   datasource:
-    url: jdbc:mysql://localhost:3306/devdatabase
-    username: user
-    password: password
+    url: jdbc:mysql://localhost:3306/devdatabase?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: rootpassword
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     hikari.auto-commit: false # set autocommit 호출 제거
