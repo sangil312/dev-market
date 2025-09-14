@@ -50,7 +50,7 @@ dependencies {
 }
 
 // Querydsl
-def querydslGeneratedDir = "build/generated/querydsl"
+def querydslGeneratedDir = 'build/generated/querydsl'
 
 sourceSets {
 	main.java.srcDirs += [ querydslGeneratedDir ]
