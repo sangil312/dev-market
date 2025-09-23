@@ -50,7 +50,7 @@ https://beeceptor.com/
 #### 모의 결제 API 스펙
 ```java
 HTTP Method : POST
-URL : '/api/v1/payment'
+URL : 'https://devmarket.free.beeceptor.com/api/v1/payment'
 
 [Request Header]
 Content-Type: application/json
