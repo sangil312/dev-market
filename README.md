@@ -1,3 +1,13 @@
+# Dev Market
+### Language & Framework
+- `Java 17`
+- `Spring Boot 3.5.5`
+- `JPA(Hibernate)` & `QueryDsl`
+- `JUnit5` & `Mokito`
+### DB & DevOps
+- `MySQL 8.x`
+- `Docker`
+---
 ## ✅ 상품 조회
 상품 목록을 불러오는 API 구현
 
@@ -8,7 +18,7 @@
 - 상품의 품절 여부가 표시되어야 합니다.
 
 ## ✅ 장바구니
-사용자별 장바구니 기능을 구현해주세요.
+사용자별 장바구니 API 구현
 
 #### 요구사항 정의
 
@@ -31,8 +41,8 @@
 
 ---
 
-## 📋 모의 API 사용 안내
-결제 처리를 위한 모의 API를 생성하여 사용해주세요.
+## 📋 모의 API
+외부 결제 API 모킹 처리를 위한 모의 API
 
 #### 모의 API 생성 사이트
 https://beeceptor.com/
