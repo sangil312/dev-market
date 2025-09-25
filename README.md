@@ -7,6 +7,9 @@
 ### DB & DevOps
 - `MySQL 8.x`
 - `Docker`
+
+### Architecture
+- Layerd Architecture
 ---
 ## ✅ 상품 조회
 상품 목록을 불러오는 API 구현
