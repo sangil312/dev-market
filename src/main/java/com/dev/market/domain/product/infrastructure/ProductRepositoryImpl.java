@@ -2,9 +2,9 @@ package com.dev.market.domain.product.infrastructure;
 
 import static com.dev.market.domain.product.domain.QProduct.product;
 
+import com.dev.market.domain.product.application.request.ProductSearchServiceRequest;
 import com.dev.market.domain.product.domain.Product;
 import com.dev.market.domain.product.domain.repository.ProductRepositoryCustom;
-import com.dev.market.domain.product.application.request.ProductSearchCondition;
 import com.dev.market.domain.product.application.response.ProductResponse;
 import com.dev.market.domain.product.application.response.QProductResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,7 +26,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ProductResponse> search(ProductSearchCondition condition, Pageable pageable) {
+    public Page<ProductResponse> search(ProductSearchServiceRequest request, Pageable pageable) {
         List<ProductResponse> content = queryFactory
                 .select(new QProductResponse(
                         product.id,
@@ -37,10 +37,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.quantity.eq(0)))
                 .from(product)
                 .join(product.category)
-                .where(categoryEq(condition.categoryId()),
-                        productNameEq(condition.productName()),
-                        priceGoe(condition.minPrice()),
-                        priceLoe(condition.maxPrice()))
+                .where(categoryEq(request.categoryId()),
+                        productNameEq(request.productName()),
+                        priceGoe(request.minPrice()),
+                        priceLoe(request.maxPrice()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -49,10 +49,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .select(product.count())
                 .from(product)
                 .join(product.category)
-                .where(categoryEq(condition.categoryId()),
-                        productNameEq(condition.productName()),
-                        priceGoe(condition.minPrice()),
-                        priceLoe(condition.maxPrice()));
+                .where(categoryEq(request.categoryId()),
+                        productNameEq(request.productName()),
+                        priceGoe(request.minPrice()),
+                        priceLoe(request.maxPrice()));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }

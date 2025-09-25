@@ -3,14 +3,13 @@ package com.dev.market.domain.product.application;
 import static org.assertj.core.api.Assertions.*;
 
 import com.dev.market.IntegrationTestSupport;
-import com.dev.market.common.exception.QuantityOverException;
 import com.dev.market.domain.cart.application.request.CartItemAddServiceRequest;
 import com.dev.market.domain.cart.domain.Cart;
 import com.dev.market.domain.cart.domain.repository.CartRepository;
 import com.dev.market.domain.category.domain.Category;
 import com.dev.market.domain.category.repository.CategoryRepository;
 import com.dev.market.domain.order.domain.Order;
-import com.dev.market.domain.product.application.request.ProductSearchCondition;
+import com.dev.market.domain.product.interfaces.request.ProductSearchRequest;
 import com.dev.market.domain.product.application.response.ProductResponse;
 import com.dev.market.domain.product.domain.Product;
 import com.dev.market.domain.product.domain.repository.ProductRepository;
@@ -26,10 +25,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class ProductServiceTest extends IntegrationTestSupport {
+class ProductServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
-    private ProductService productService;
+    private ProductServiceImpl productServiceImpl;
 
     @Autowired
     private ProductRepository productRepository;
@@ -54,11 +53,11 @@ class ProductServiceTest extends IntegrationTestSupport {
         Product product2 = Product.create(category, "상품2", 2000L, 0);
         productRepository.saveAll(List.of(product1, product2));
 
-        ProductSearchCondition condition = new ProductSearchCondition(null, null, null, null);
+        ProductSearchRequest request = new ProductSearchRequest(null, null, null, null);
         PageRequest pageable = PageRequest.of(0, 5);
 
         // when
-        Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
+        Page<ProductResponse> productResponses = productServiceImpl.searchProducts(request.toServiceRequest(), pageable);
 
         // then
         assertThat(productResponses.getContent()).hasSize(2)
@@ -85,11 +84,11 @@ class ProductServiceTest extends IntegrationTestSupport {
         Product product2 = Product.create(category, "상품2", 2000L, 0);
         productRepository.saveAll(List.of(product1, product2));
 
-        ProductSearchCondition condition = new ProductSearchCondition(category.getId(), "상품1", 100L, 1000L);
+        ProductSearchRequest request = new ProductSearchRequest(category.getId(), "상품1", 100L, 1000L);
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
+        Page<ProductResponse> productResponses = productServiceImpl.searchProducts(request.toServiceRequest(), pageable);
 
         // then
         assertThat(productResponses).hasSize(1)
@@ -109,11 +108,11 @@ class ProductServiceTest extends IntegrationTestSupport {
         Product product2 = Product.create(category2, "상품2", 2000L, 0);
         productRepository.saveAll(List.of(product1, product2));
 
-        ProductSearchCondition condition = new ProductSearchCondition(category1.getId(), null, null, null);
+        ProductSearchRequest request = new ProductSearchRequest(category1.getId(), null, null, null);
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
+        Page<ProductResponse> productResponses = productServiceImpl.searchProducts(request.toServiceRequest(), pageable);
 
         // then
         assertThat(productResponses).hasSize(1)
@@ -132,11 +131,11 @@ class ProductServiceTest extends IntegrationTestSupport {
         Product product2 = Product.create(category, "상품2", 2000L, 0);
         productRepository.saveAll(List.of(product1, product2));
 
-        ProductSearchCondition condition = new ProductSearchCondition(null, "상품1", null, null);
+        ProductSearchRequest request = new ProductSearchRequest(null, "상품1", null, null);
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
+        Page<ProductResponse> productResponses = productServiceImpl.searchProducts(request.toServiceRequest(), pageable);
 
         // then
         assertThat(productResponses).hasSize(1)
@@ -156,11 +155,11 @@ class ProductServiceTest extends IntegrationTestSupport {
         Product product3 = Product.create(category, "상품3", 3000L, 10);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        ProductSearchCondition condition = new ProductSearchCondition(null, null, 2000L, 3000L);
+        ProductSearchRequest request = new ProductSearchRequest(null, null, 2000L, 3000L);
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        Page<ProductResponse> productResponses = productService.searchProducts(condition, pageable);
+        Page<ProductResponse> productResponses = productServiceImpl.searchProducts(request.toServiceRequest(), pageable);
 
         // then
         assertThat(productResponses).hasSize(2)
@@ -169,52 +168,6 @@ class ProductServiceTest extends IntegrationTestSupport {
                         tuple("상품2", 2000L, 0, true),
                         tuple("상품3", 3000L, 10, false)
                 );
-    }
-
-    @Test
-    @DisplayName("상품 재고를 차감시킨다.")
-    void productDecreasesStock() {
-        // given
-        User user = User.create("user1");
-        userRepository.save(user);
-
-        Category category = Category.create("카테고리1");
-        categoryRepository.save(category);
-
-        Product product = Product.create(category, "상품1", 1000L, 10);
-        productRepository.save(product);
-
-        Cart cart = cartRepository.save(Cart.create(user));
-        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 1);
-        cart.addCartItem(product, cartItem);
-
-        // when
-        productService.productDecreasesStock(cart.getCartItems());
-
-        // then
-        assertThat(product.getQuantity()).isEqualTo(9);
-    }
-
-    @Test
-    @DisplayName("상품 재고를 차감 시 재고를 초과하면 예외가 발생한다.")
-    void productDecreasesStockWithQuantityOver() {
-        // given
-        User user = User.create("user1");
-        userRepository.save(user);
-
-        Category category = Category.create("카테고리1");
-        categoryRepository.save(category);
-
-        Product product = Product.create(category, "상품1", 1000L, 1);
-        productRepository.save(product);
-
-        Cart cart = cartRepository.save(Cart.create(user));
-        CartItemAddServiceRequest cartItem = new CartItemAddServiceRequest(product.getId(), 2);
-        cart.addCartItem(product, cartItem);
-
-        // when // then
-        assertThatThrownBy(() -> productService.productDecreasesStock(cart.getCartItems()))
-                .isInstanceOf(QuantityOverException.class);
     }
 
     @Test
@@ -237,7 +190,7 @@ class ProductServiceTest extends IntegrationTestSupport {
         Order order = Order.create("idempotencyKey", user, cart.getCartItems(), LocalDateTime.now());
 
         // when
-        productService.productStockRollback(order.getOrderItems());
+        productServiceImpl.productStockRollback(order.getOrderItems());
 
         // then
         assertThat(product.getQuantity()).isEqualTo(1);

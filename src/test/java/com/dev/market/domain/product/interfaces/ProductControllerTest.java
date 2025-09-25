@@ -7,7 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.dev.market.ControllerTestSupport;
-import com.dev.market.domain.product.application.request.ProductSearchCondition;
+import com.dev.market.domain.product.application.request.ProductSearchServiceRequest;
+import com.dev.market.domain.product.interfaces.request.ProductSearchRequest;
 import com.dev.market.domain.product.application.response.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class ProductControllerTest extends ControllerTestSupport {
     @DisplayName("상품 목록을 조회한다.")
     void searchProducts() throws Exception {
         // given
-        ProductSearchCondition condition = ProductSearchCondition.builder()
+        ProductSearchRequest condition = ProductSearchRequest.builder()
                 .categoryId(1L)
                 .productName("상품1")
                 .minPrice(1000L)
@@ -46,7 +47,7 @@ class ProductControllerTest extends ControllerTestSupport {
                 10
         );
 
-        when(productService.searchProducts(any(ProductSearchCondition.class), any(Pageable.class)))
+        when(productServiceImpl.searchProducts(any(ProductSearchServiceRequest.class), any(Pageable.class)))
                 .thenReturn(response);
 
         // when // then

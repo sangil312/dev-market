@@ -5,7 +5,7 @@ import com.dev.market.domain.cart.interfaces.CartController;
 import com.dev.market.domain.order.application.OrderAndPayFacadeService;
 import com.dev.market.domain.order.interfaces.OrderController;
 import com.dev.market.domain.product.interfaces.ProductController;
-import com.dev.market.domain.product.application.ProductService;
+import com.dev.market.domain.product.application.ProductServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,7 +26,7 @@ public abstract class ControllerTestSupport {
     protected ObjectMapper objectMapper;
 
     @MockitoBean
-    protected ProductService productService;
+    protected ProductServiceImpl productServiceImpl;
 
     @MockitoBean
     protected CartService cartService;

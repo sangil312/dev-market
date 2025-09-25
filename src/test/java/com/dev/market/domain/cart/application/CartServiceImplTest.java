@@ -30,10 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-class CartServiceTest extends IntegrationTestSupport {
+class CartServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
-    private CartService cartService;
+    private CartServiceImpl cartService;
 
     @Autowired
     private CartRepository cartRepository;

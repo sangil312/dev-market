@@ -77,7 +77,7 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
         Long cartItemId = cart.getCartItems().get(0).getId();
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), List.of(cartItemId));
 
-        when(paymentApiService.externalPaymentApiCall(anyLong(), any()))
+        when(PaymentGatewayServiceImpl.externalPaymentApiCall(anyLong(), any()))
                 .thenReturn(new PaymentResultDto(
                         1L, 1000L, true, "txn_123456", null));
 
@@ -127,7 +127,7 @@ class OrderAndPayFacadeServiceTest extends IntegrationTestSupport {
         Long cartItemId = cart.getCartItems().get(0).getId();
         OrderCreateServiceRequest request = new OrderCreateServiceRequest(cart.getId(), List.of(cartItemId));
 
-        when(paymentApiService.externalPaymentApiCall(anyLong(), any()))
+        when(PaymentGatewayServiceImpl.externalPaymentApiCall(anyLong(), any()))
                 .thenThrow(ExternalApiException.class);
 
         //when

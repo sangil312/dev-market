@@ -1,6 +1,6 @@
 package com.dev.market;
 
-import com.dev.market.domain.product.infrastructure.PaymentApiService;
+import com.dev.market.domain.product.infrastructure.PaymentGatewayServiceImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -10,5 +10,5 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 public abstract class IntegrationTestSupport {
 
     @MockitoBean
-    protected PaymentApiService paymentApiService;
+    protected PaymentGatewayServiceImpl PaymentGatewayServiceImpl;
 }

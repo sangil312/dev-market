@@ -1,7 +1,7 @@
 package com.dev.market.domain.order.application;
 
 import com.dev.market.common.exception.dto.ExternalApiException;
-import com.dev.market.domain.cart.application.CartService;
+import com.dev.market.domain.cart.application.CartServiceImpl;
 import com.dev.market.domain.cart.application.request.CartItemDeleteServiceRequest;
 import com.dev.market.domain.cart.domain.CartItem;
 import com.dev.market.domain.order.application.repuest.OrderCreateServiceRequest;
@@ -11,8 +11,8 @@ import com.dev.market.domain.order.domain.Order;
 import com.dev.market.domain.payment.application.PaymentService;
 import com.dev.market.domain.payment.application.response.PaymentResultDto;
 import com.dev.market.domain.payment.domain.Payment;
-import com.dev.market.domain.product.application.ProductService;
-import com.dev.market.domain.product.infrastructure.PaymentApiService;
+import com.dev.market.domain.product.application.ProductServiceImpl;
+import com.dev.market.domain.product.infrastructure.PaymentGatewayServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +27,11 @@ public class OrderAndPayFacadeService {
 
     private final PaymentService paymentService;
 
-    private final ProductService productService;
+    private final ProductServiceImpl productServiceImpl;
 
-    private final CartService cartService;
+    private final CartServiceImpl cartService;
 
-    private final PaymentApiService paymentApiService;
+    private final PaymentGatewayServiceImpl paymentGatewayServiceImpl;
 
     public OrderResponse createOrderAndPay(
             final String idempotencyKey,
@@ -47,7 +47,7 @@ public class OrderAndPayFacadeService {
 
         PaymentResultDto paymentResult;
         try {
-            paymentResult = paymentApiService.externalPaymentApiCall(
+            paymentResult = paymentGatewayServiceImpl.externalPaymentApiCall(
                     createdOrder.getId(),
                     createdOrder.getTotalPrice());
             // 결제 완료 장바구니 상품 삭제
@@ -57,7 +57,7 @@ public class OrderAndPayFacadeService {
                     createdOrder.getId(),
                     createdOrder.getTotalPrice());
             // 재고 롤백
-            productService.productStockRollback(createdOrder.getOrderItems());
+            productServiceImpl.productStockRollback(createdOrder.getOrderItems());
         }
         // 결제 이력 추가 및 주문 상태 변경
         Payment payment = paymentService.createPaymentAndOrderStatusUpdate(createdOrder, paymentResult);

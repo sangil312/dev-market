@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentApiServiceTest {
+class PaymentGatewayServiceImplTest {
 
 
     @DisplayName("외부 결제 API 호출 시 결제 성공 응답을 받으면 PaymentResultDto 를 응답한다.")
@@ -40,10 +40,10 @@ class PaymentApiServiceTest {
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(PaymentResponse.class)).thenReturn(Mono.just(mockResponse));
 
-        PaymentApiService paymentApiService = new PaymentApiService(mockWebClient);
+        PaymentGatewayServiceImpl paymentGatewayServiceImpl = new PaymentGatewayServiceImpl(mockWebClient);
 
         // when
-        PaymentResultDto result = paymentApiService.externalPaymentApiCall(orderId, totalPrice);
+        PaymentResultDto result = paymentGatewayServiceImpl.externalPaymentApiCall(orderId, totalPrice);
 
         // then
         assertThat(result).isNotNull();
@@ -74,10 +74,10 @@ class PaymentApiServiceTest {
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(PaymentResponse.class)).thenReturn(Mono.just(mockResponse));
 
-        PaymentApiService paymentApiService = new PaymentApiService(mockWebClient);
+        PaymentGatewayServiceImpl paymentGatewayServiceImpl = new PaymentGatewayServiceImpl(mockWebClient);
 
         // when // then
-        assertThatThrownBy(() ->  paymentApiService.externalPaymentApiCall(orderId, totalPrice))
+        assertThatThrownBy(() ->  paymentGatewayServiceImpl.externalPaymentApiCall(orderId, totalPrice))
                 .isInstanceOf(ExternalApiException.class);
     }
 }
