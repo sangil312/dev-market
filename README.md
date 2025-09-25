@@ -10,6 +10,7 @@
 
 ### Architecture
 - Layerd Architecture
+- Clean Architecture
 ---
 ## ✅ 상품 조회
 상품 목록을 불러오는 API 구현
