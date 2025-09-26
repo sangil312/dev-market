@@ -11,6 +11,38 @@
 ### Architecture
 - Layerd Architecture
 - Clean Architecture
+
+### API 명세
+- Spring REST Docs
+  ```gradle
+  dav-market/
+  ./gradlew clean
+  ./gradlew bootJar
+  java -jar build/libs/market-0.0.1-SNAPSHOT.jar
+  ```
+  - jar 파일 실행 후# Dev Market
+### Language & Framework
+- `Java 17`
+- `Spring Boot 3.5.5`
+- `JPA(Hibernate)` & `QueryDsl`
+- `JUnit5` & `Mokito`
+### DB & DevOps
+- `MySQL 8.x`
+- `Docker`
+
+### Architecture
+- Layerd Architecture
+- Clean Architecture
+
+### API 명세
+- Spring REST Docs
+  ```gradle
+  dav-market/
+  ./gradlew clean
+  ./gradlew bootJar
+  java -jar build/libs/market-0.0.1-SNAPSHOT.jar
+  ```
+  - jar 파일 실행 후 `http://localhost:8080/docs/index.html` 접근 시 API 명세 확인 가능
 ---
 ## ✅ 상품 조회
 상품 목록을 불러오는 API 구현
