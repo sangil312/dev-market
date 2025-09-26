@@ -1,0 +1,25 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Dev Market REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Product-API]]
+== Product API
+
+include::api/product/product.adoc[]
+
+[[Cart-API]]
+== Cart API
+
+include::api/cart/cart.adoc[]
+
+[[Order-API]]
+== Order API
+
+include::api/order/order.adoc[]

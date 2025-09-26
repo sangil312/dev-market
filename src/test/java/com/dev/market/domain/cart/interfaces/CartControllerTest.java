@@ -4,6 +4,19 @@ package com.dev.market.domain.cart.interfaces;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -60,7 +73,37 @@ class CartControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.items[0].unitPrice").value(1000L))
                 .andExpect(jsonPath("$.items[0].subTotalPrice").value(1000L))
                 .andExpect(jsonPath("$.items[0].isSoldOut").value(false))
-                .andExpect(jsonPath("$.items[0].quantityOver").value(false));
+                .andExpect(jsonPath("$.items[0].quantityOver").value(false))
+                //REST Docs
+                .andDo(document("my-cart-list",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("cartId").type(NUMBER)
+                                        .description("장바구니 ID"),
+                                fieldWithPath("totalItemsQuantity").type(NUMBER)
+                                        .description("장바구니 상품 별 수량"),
+                                fieldWithPath("totalPrice").type(NUMBER)
+                                        .description("장바구니 상품 별 총 가격"),
+                                fieldWithPath("items[].cartItemId").type(NUMBER)
+                                        .description("장바구니 상품 ID"),
+                                fieldWithPath("items[].productId").type(NUMBER)
+                                        .description("상품 ID"),
+                                fieldWithPath("items[].productName").type(STRING)
+                                        .description("상품 이름"),
+                                fieldWithPath("items[].quantity").type(NUMBER)
+                                        .description("장바구니 상품 수량"),
+                                fieldWithPath("items[].unitPrice").type(NUMBER)
+                                        .description("장바구니 상품 개당 가격"),
+                                fieldWithPath("items[].subTotalPrice").type(NUMBER)
+                                        .description("장바구니 상품 가격"),
+                                fieldWithPath("items[].isSoldOut").type(BOOLEAN)
+                                        .description("품절 여부"),
+                                fieldWithPath("items[].quantityOver").type(BOOLEAN)
+                                        .description("상품 재고 부족")
+                        )
+                )
+        );
     }
 
     @Test
@@ -81,7 +124,25 @@ class CartControllerTest extends ControllerTestSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cartId").value(1L))
-                .andExpect(jsonPath("$.cartBadgeCount").value(1));
+                .andExpect(jsonPath("$.cartBadgeCount").value(1))
+                // REST Docs
+                .andDo(document("cart-add-items",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("productId").type(NUMBER)
+                                        .description("상품 ID"),
+                                fieldWithPath("quantity").type(NUMBER)
+                                        .description("상품 수량")
+                        ),
+                        responseFields(
+                                fieldWithPath("cartId").type(NUMBER)
+                                        .description("장바구니 ID"),
+                                fieldWithPath("cartBadgeCount").type(NUMBER)
+                                        .description("장바구니 상품 목록 수량")
+                        )
+                )
+        );
     }
 
     @Test
@@ -135,7 +196,39 @@ class CartControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.unitPrice").value(1000L))
                 .andExpect(jsonPath("$.subTotalPrice").value(1000L))
                 .andExpect(jsonPath("$.isSoldOut").value(false))
-                .andExpect(jsonPath("$.quantityOver").value(false));
+                .andExpect(jsonPath("$.quantityOver").value(false))
+                // REST Docs
+                .andDo(document("cart-update-item",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("cartId").description("장바구니 ID"),
+                                parameterWithName("cartItemId").description("장바구니 상품 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("quantity").type(NUMBER)
+                                        .description("상품 수량")
+                        ),
+                        responseFields(
+                                fieldWithPath("cartItemId").type(NUMBER)
+                                        .description("장바구니 상품 ID"),
+                                fieldWithPath("productId").type(NUMBER)
+                                        .description("상품 ID"),
+                                fieldWithPath("productName").type(STRING)
+                                        .description("상품 이름"),
+                                fieldWithPath("quantity").type(NUMBER)
+                                        .description("상품 수량"),
+                                fieldWithPath("unitPrice").type(NUMBER)
+                                        .description("상품 가격"),
+                                fieldWithPath("subTotalPrice").type(NUMBER)
+                                        .description("장바구니에 담긴 상품 총 가격"),
+                                fieldWithPath("isSoldOut").type(BOOLEAN)
+                                        .description("상품 품절 여부"),
+                                fieldWithPath("quantityOver").type(BOOLEAN)
+                                        .description("상품 재고 초과")
+                        )
+                )
+        );
     }
 
     @Test
@@ -170,11 +263,24 @@ class CartControllerTest extends ControllerTestSupport {
                         .content(objectMapper.writeValueAsString(request))
         )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                // REST Docs
+                .andDo(document("cart-delete-items",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("cartId").description("장바구니 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("cartItemIds[]").type(ARRAY)
+                                        .description("장바구니 상품 ID")
+                        )
+                )
+        );
     }
 
     @Test
-    @DisplayName("장바구니에 상품을 삭제한다.")
+    @DisplayName("장바구니에 상품 삭제 시 장바구니 아이템 ID가 존재해야한다.")
     void deleteCartItemWithEmptyCartItemIds() throws Exception {
         // given
         CartItemDeleteServiceRequest request = new CartItemDeleteServiceRequest(List.of());
