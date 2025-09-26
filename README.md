@@ -20,7 +20,7 @@
   ./gradlew bootJar
   java -jar build/libs/market-0.0.1-SNAPSHOT.jar
   ```
-  - jar 파일 실행 후# Dev Market
+  - jar 파일 실행 후 `http://localhost:8080/docs/index.html`
 ### Language & Framework
 - `Java 17`
 - `Spring Boot 3.5.5`
