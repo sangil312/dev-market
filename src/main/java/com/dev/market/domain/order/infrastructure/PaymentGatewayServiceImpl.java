@@ -1,4 +1,4 @@
-package com.dev.market.domain.product.infrastructure;
+package com.dev.market.domain.order.infrastructure;
 
 import com.dev.market.common.exception.dto.ExternalApiException;
 import com.dev.market.domain.order.application.PaymentGatewayService;

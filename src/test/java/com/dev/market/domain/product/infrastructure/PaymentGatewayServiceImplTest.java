@@ -1,6 +1,7 @@
 package com.dev.market.domain.product.infrastructure;
 
 import com.dev.market.common.exception.dto.ExternalApiException;
+import com.dev.market.domain.order.infrastructure.PaymentGatewayServiceImpl;
 import com.dev.market.domain.payment.application.response.PaymentResultDto;
 import com.dev.market.domain.product.infrastructure.response.PaymentResponse;
 import org.junit.jupiter.api.DisplayName;

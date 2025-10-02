@@ -12,7 +12,7 @@ import com.dev.market.domain.payment.application.PaymentService;
 import com.dev.market.domain.payment.application.response.PaymentResultDto;
 import com.dev.market.domain.payment.domain.Payment;
 import com.dev.market.domain.product.application.ProductServiceImpl;
-import com.dev.market.domain.product.infrastructure.PaymentGatewayServiceImpl;
+import com.dev.market.domain.order.infrastructure.PaymentGatewayServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
