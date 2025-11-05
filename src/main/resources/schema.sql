@@ -28,8 +28,7 @@ CREATE TABLE products (
     category_id     BIGINT        NOT NULL COMMENT '카테고리 ID',
     name            VARCHAR(255)  NOT NULL COMMENT '상품명',
     price           BIGINT        NOT NULL DEFAULT 0 COMMENT '상품 가격',
-    quantity        INT           NOT NULL DEFAULT 0 COMMENT '상품 수량',
-    version         INT           NOT NULL DEFAULT 0,
+    quantity        INT           NOT NULL DEFAULT 0 COMMENT '상품 재고',
     created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
     updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
 
