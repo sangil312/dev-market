@@ -1,6 +1,7 @@
 # Dev Market
 # 📃ERD
-<img width="1241" height="582" alt="dev-market_ERD" src="https://github.com/user-attachments/assets/fea45ea9-d7d9-4c8b-b10d-65d1ef26884d" />
+<img width="1241" height="581" alt="toy_project_ERD drawio" src="https://github.com/user-attachments/assets/d9db7cc8-b01b-46fb-b364-3615a20f327a" />
+
 
 ---
 ### Language & Framework
